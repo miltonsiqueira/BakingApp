@@ -9,6 +9,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import br.com.titomilton.bakingapp.RecipeListFragment.OnListFragmentInteractionListener;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Recipe} and makes a call to the
@@ -61,13 +63,13 @@ public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecycl
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mContentView;
+        @BindView(R.id.content) TextView mContentView;
         public Recipe mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mContentView = view.findViewById(R.id.content);
+            ButterKnife.bind(this, view);
         }
 
         @Override
