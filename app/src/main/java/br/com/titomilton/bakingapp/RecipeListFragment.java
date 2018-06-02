@@ -6,12 +6,20 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import br.com.titomilton.bakingapp.api.RestAPI;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A fragment representing a list of Items.
@@ -19,19 +27,17 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class RecipeListFragment extends Fragment {
-
+public class RecipeListFragment extends Fragment implements Callback<List<Recipe>> {
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
+
+    public static String LOG = RecipeListFragment.class.getName();
+
     // TODO: Customize parameters
     private int mColumnCount = 1;
 
-    private List<Recipe> recipes = new ArrayList<Recipe>(){{
-        add(new Recipe(1, "Recipe 1"));
-        add(new Recipe(2, "Recipe 2"));
-        add(new Recipe(3, "Recipe 3"));
-        add(new Recipe(3, "Recipe 4"));
-    }};
+    private List<Recipe> recipes = new ArrayList<>();
+    private RecipeRecyclerViewAdapter mAdapter;
 
     private OnListFragmentInteractionListener mListener;
 
@@ -52,6 +58,35 @@ public class RecipeListFragment extends Fragment {
     }
 
     @Override
+    public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+        try {
+            Context context = this.getContext();
+            if (response.isSuccessful()) {
+                this.recipes = response.body();
+                mAdapter.setRecipes(this.recipes);
+
+                Toast.makeText(context, "Recipes loaded", Toast.LENGTH_SHORT);
+            } else {
+
+
+                String errorMessage = response.errorBody().string();
+                Log.e(LOG, errorMessage);
+                Toast.makeText(context, errorMessage, Toast.LENGTH_LONG);
+
+            }
+        } catch (IOException e) {
+            Log.e(LOG, e.getMessage(), e);
+            Toast.makeText(this.getContext(), e.getMessage(), Toast.LENGTH_LONG);
+        }
+    }
+
+    @Override
+    public void onFailure(Call<List<Recipe>> call, Throwable t) {
+        Log.e(LOG, t.getMessage(), t);
+        Toast.makeText(this.getContext(), t.getMessage(), Toast.LENGTH_LONG);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -65,17 +100,22 @@ public class RecipeListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recipe_list, container, false);
 
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new RecipeRecyclerViewAdapter(recipes, mListener));
+        Context context = view.getContext();
+        RecyclerView recyclerView = (RecyclerView) view;
+        if (mColumnCount <= 1) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        } else {
+            recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
+        mAdapter = new RecipeRecyclerViewAdapter(recipes, mListener);
+        recyclerView.setAdapter(mAdapter);
+
+
+        if (recipes.isEmpty()) {
+            RestAPI.getRecipes(this);
+        }
+
+        // Set the adapter
         return view;
     }
 

@@ -16,12 +16,17 @@ import br.com.titomilton.bakingapp.RecipeListFragment.OnListFragmentInteractionL
  */
 public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Recipe> mValues;
+    private List<Recipe> mRecipes;
     private final OnListFragmentInteractionListener mListener;
 
     public RecipeRecyclerViewAdapter(List<Recipe> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
+        mRecipes = items;
         mListener = listener;
+    }
+
+    public void setRecipes(List<Recipe> data) {
+        this.mRecipes = data;
+        this.notifyDataSetChanged();
     }
 
     @Override
@@ -33,7 +38,7 @@ public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecycl
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        Recipe recipe = mValues.get(position);
+        Recipe recipe = mRecipes.get(position);
         holder.mItem = recipe;
         holder.mContentView.setText(recipe.getName());
 
@@ -51,7 +56,7 @@ public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecycl
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return mRecipes.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
