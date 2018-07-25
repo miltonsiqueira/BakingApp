@@ -2,14 +2,6 @@ package br.com.titomilton.bakingapp;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
-
-import java.io.IOException;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements RecipeListFragment.OnListFragmentInteractionListener {
 
