@@ -1,4 +1,4 @@
-package br.com.titomilton.bakingapp;
+package br.com.titomilton.bakingapp.ui;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -16,7 +16,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.titomilton.bakingapp.R;
 import br.com.titomilton.bakingapp.api.RestAPI;
+import br.com.titomilton.bakingapp.entity.Recipe;
+import br.com.titomilton.bakingapp.utils.AppExecutors;
+import br.com.titomilton.bakingapp.utils.NetworkUtils;
+import database.AppDatabase;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,6 +45,8 @@ public class RecipeListFragment extends Fragment implements Callback<List<Recipe
     private RecipeRecyclerViewAdapter mAdapter;
 
     private OnListFragmentInteractionListener mListener;
+    private AppDatabase appDatabase;
+    private AppExecutors appExecutors;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -48,7 +55,6 @@ public class RecipeListFragment extends Fragment implements Callback<List<Recipe
     public RecipeListFragment() {
     }
 
-    // TODO: Customize parameter initialization
     public static RecipeListFragment newInstance(int columnCount) {
         RecipeListFragment fragment = new RecipeListFragment();
         Bundle args = new Bundle();
@@ -63,6 +69,9 @@ public class RecipeListFragment extends Fragment implements Callback<List<Recipe
             Context context = this.getContext();
             if (response.isSuccessful()) {
                 this.recipes = response.body();
+
+                appDatabase.sync(context, recipes);
+
                 mAdapter.setRecipes(this.recipes);
 
                 Toast.makeText(context, "Recipes loaded", Toast.LENGTH_SHORT);
@@ -100,7 +109,7 @@ public class RecipeListFragment extends Fragment implements Callback<List<Recipe
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recipe_list, container, false);
 
-        Context context = view.getContext();
+        final Context context = view.getContext();
         RecyclerView recyclerView = (RecyclerView) view;
         if (mColumnCount <= 1) {
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -110,12 +119,25 @@ public class RecipeListFragment extends Fragment implements Callback<List<Recipe
         mAdapter = new RecipeRecyclerViewAdapter(recipes, mListener);
         recyclerView.setAdapter(mAdapter);
 
+        appDatabase = AppDatabase.getInstance(context);
+        appExecutors = AppExecutors.getInstance();
 
         if (recipes.isEmpty()) {
-            RestAPI.getRecipes(this);
+            final RecipeListFragment self = this;
+
+            appExecutors.diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    recipes = appDatabase.recipeDao().getAll();
+                    if (NetworkUtils.isConnected(context)) {
+                        RestAPI.getRecipes(self);
+                    }
+
+                }
+            });
         }
 
-        // Set the adapter
+
         return view;
     }
 

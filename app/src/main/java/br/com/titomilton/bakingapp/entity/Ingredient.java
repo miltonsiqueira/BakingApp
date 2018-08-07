@@ -1,6 +1,14 @@
-package br.com.titomilton.bakingapp;
+package br.com.titomilton.bakingapp.entity;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
+@Entity
 public class Ingredient {
+
+    @PrimaryKey(autoGenerate = true)
+    private int id;
+
     private float quantity;
     private String measure;
     private String ingredient;

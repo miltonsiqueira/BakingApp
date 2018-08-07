@@ -1,22 +1,22 @@
-package br.com.titomilton.bakingapp;
+package br.com.titomilton.bakingapp.entity;
+
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 
 import java.util.List;
 
+@Entity
 public class Recipe {
+
+    @PrimaryKey
     private int id;
     private String name;
-    private List<Ingredient> ingredients;
-    private List<Step> steps;
     private int serving;
     private String image;
+    private List<Ingredient> ingredients;
+    private List<Step> steps;
 
-    public Recipe() {
-    }
 
-    public Recipe(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
 
     public int getId() {
         return id;
