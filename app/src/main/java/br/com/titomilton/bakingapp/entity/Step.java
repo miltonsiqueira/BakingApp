@@ -1,70 +1,54 @@
 package br.com.titomilton.bakingapp.entity;
 
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import com.google.gson.annotations.SerializedName;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Entity
-public class Step {
+@Getter
+@Setter
+@NoArgsConstructor
+public class Step implements Parcelable {
 
-    @PrimaryKey(autoGenerate = true)
     private int id;
-
-    @SerializedName(value="id")
-    private int order;
-
     private String shortDescription;
     private String description;
     private String videoURL;
     private String thumbnailURL;
 
-    public int getId() {
-        return id;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeString(this.shortDescription);
+        dest.writeString(this.description);
+        dest.writeString(this.videoURL);
+        dest.writeString(this.thumbnailURL);
     }
 
-    public String getShortDescription() {
-        return shortDescription;
+    protected Step(Parcel in) {
+        this.id = in.readInt();
+        this.shortDescription = in.readString();
+        this.description = in.readString();
+        this.videoURL = in.readString();
+        this.thumbnailURL = in.readString();
     }
 
-    public void setShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
-    }
+    public static final Parcelable.Creator<Step> CREATOR = new Parcelable.Creator<Step>() {
+        @Override
+        public Step createFromParcel(Parcel source) {
+            return new Step(source);
+        }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getVideoURL() {
-        return videoURL;
-    }
-
-    public void setVideoURL(String videoURL) {
-        this.videoURL = videoURL;
-    }
-
-    public String getThumbnailURL() {
-        return thumbnailURL;
-    }
-
-    public void setThumbnailURL(String thumbnailURL) {
-        this.thumbnailURL = thumbnailURL;
-    }
-
-    public int getOrder() {
-        return order;
-    }
-
-    public void setOrder(int order) {
-        this.order = order;
-    }
-
+        @Override
+        public Step[] newArray(int size) {
+            return new Step[size];
+        }
+    };
 }

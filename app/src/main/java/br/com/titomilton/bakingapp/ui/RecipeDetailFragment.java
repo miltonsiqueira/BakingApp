@@ -1,35 +1,34 @@
 package br.com.titomilton.bakingapp.ui;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import br.com.titomilton.bakingapp.R;
-import br.com.titomilton.bakingapp.entity.Recipe;
-import database.AppDatabase;
+import br.com.titomilton.bakingapp.entity.Ingredient;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RecipeDetailFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link RecipeDetailFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class RecipeDetailFragment extends Fragment {
 
+    @BindView(R.id.tv_ingredients)
+    TextView tvIngredients;
+    private Unbinder unbinder;
+//    private OnFragmentInteractionListener mListener;
+    private RecipeViewModel recipeViewModel;
 
-    private OnFragmentInteractionListener mListener;
-    private AppDatabase appDatabase;
 
     public RecipeDetailFragment() {
-        // Required empty public constructor
     }
-
 
 
     @Override
@@ -40,49 +39,58 @@ public class RecipeDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_recipe_detail, container, false);
+        View view = inflater.inflate(R.layout.fragment_recipe_detail, container, false);
+        unbinder = ButterKnife.bind(this, view);
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+//        if (mListener != null) {
+//            mListener.onFragmentInteraction(uri);
+//        }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-            appDatabase = AppDatabase.getInstance(getContext());
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+    }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        recipeViewModel = ViewModelProviders.of(getActivity()).get(RecipeViewModel.class);
+
+        if (recipeViewModel.getRecipe() != null) {
+            setIngredients();
+        }
+    }
+
+    private void setIngredients() {
+        StringBuilder sb = new StringBuilder();
+        for (Ingredient ingredient : recipeViewModel.getRecipe().getIngredients()) {
+            sb.append("- ")
+                    .append(ingredient.getIngredient())
+                    .append(" (")
+                    .append(ingredient.getQuantity())
+                    .append(" ")
+                    .append(ingredient.getMeasure())
+                    .append(")\n");
+        }
+        this.tvIngredients.setText(sb.toString());
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
 

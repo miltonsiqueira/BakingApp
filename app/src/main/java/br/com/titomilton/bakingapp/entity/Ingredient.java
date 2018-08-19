@@ -1,39 +1,52 @@
 package br.com.titomilton.bakingapp.entity;
 
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-@Entity
-public class Ingredient {
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-    @PrimaryKey(autoGenerate = true)
+@Getter
+@Setter
+@NoArgsConstructor
+public class Ingredient implements Parcelable {
+
     private int id;
 
     private float quantity;
     private String measure;
     private String ingredient;
 
-    public float getQuantity() {
-        return quantity;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public void setQuantity(float quantity) {
-        this.quantity = quantity;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeFloat(this.quantity);
+        dest.writeString(this.measure);
+        dest.writeString(this.ingredient);
     }
 
-    public String getMeasure() {
-        return measure;
+    protected Ingredient(Parcel in) {
+        this.id = in.readInt();
+        this.quantity = in.readFloat();
+        this.measure = in.readString();
+        this.ingredient = in.readString();
     }
 
-    public void setMeasure(String measure) {
-        this.measure = measure;
-    }
+    public static final Parcelable.Creator<Ingredient> CREATOR = new Parcelable.Creator<Ingredient>() {
+        @Override
+        public Ingredient createFromParcel(Parcel source) {
+            return new Ingredient(source);
+        }
 
-    public String getIngredient() {
-        return ingredient;
-    }
-
-    public void setIngredient(String ingredient) {
-        this.ingredient = ingredient;
-    }
+        @Override
+        public Ingredient[] newArray(int size) {
+            return new Ingredient[size];
+        }
+    };
 }

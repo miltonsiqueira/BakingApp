@@ -1,14 +1,20 @@
 package br.com.titomilton.bakingapp.entity;
 
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.List;
 
-@Entity
-public class Recipe {
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-    @PrimaryKey
+@Getter
+@Setter
+@NoArgsConstructor
+public class Recipe implements Parcelable {
+
+
     private int id;
     private String name;
     private int serving;
@@ -16,53 +22,39 @@ public class Recipe {
     private List<Ingredient> ingredients;
     private List<Step> steps;
 
-
-
-    public int getId() {
-        return id;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeString(this.name);
+        dest.writeInt(this.serving);
+        dest.writeString(this.image);
+        dest.writeTypedList(this.ingredients);
+        dest.writeTypedList(this.steps);
     }
 
-    public String getName() {
-        return name;
+    protected Recipe(Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
+        this.serving = in.readInt();
+        this.image = in.readString();
+        this.ingredients = in.createTypedArrayList(Ingredient.CREATOR);
+        this.steps = in.createTypedArrayList(Step.CREATOR);
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public static final Parcelable.Creator<Recipe> CREATOR = new Parcelable.Creator<Recipe>() {
+        @Override
+        public Recipe createFromParcel(Parcel source) {
+            return new Recipe(source);
+        }
 
-    public List<Ingredient> getIngredients() {
-        return ingredients;
-    }
-
-    public void setIngredients(List<Ingredient> ingredients) {
-        this.ingredients = ingredients;
-    }
-
-    public List<Step> getSteps() {
-        return steps;
-    }
-
-    public void setSteps(List<Step> steps) {
-        this.steps = steps;
-    }
-
-    public int getServing() {
-        return serving;
-    }
-
-    public void setServing(int serving) {
-        this.serving = serving;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
+        @Override
+        public Recipe[] newArray(int size) {
+            return new Recipe[size];
+        }
+    };
 }
