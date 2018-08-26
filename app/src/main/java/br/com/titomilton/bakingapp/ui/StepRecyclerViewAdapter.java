@@ -1,6 +1,7 @@
 package br.com.titomilton.bakingapp.ui;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,42 +10,42 @@ import android.widget.TextView;
 import java.util.List;
 
 import br.com.titomilton.bakingapp.R;
-import br.com.titomilton.bakingapp.entity.Recipe;
-import br.com.titomilton.bakingapp.ui.RecipeListFragment.OnRecipeListFragmentListener;
+import br.com.titomilton.bakingapp.entity.Step;
+import br.com.titomilton.bakingapp.ui.StepListFragment.OnStepListListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import lombok.Getter;
+
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link Recipe} and makes a call to the
- * specified {@link OnRecipeListFragmentListener}.
+ * {@link RecyclerView.Adapter} that can display a {@link Step} and makes a call to the
+ * specified {@link StepListFragment.OnStepListListener}.
+ * TODO: Replace the implementation with code for your data type.
  */
-public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecyclerViewAdapter.ViewHolder> {
+public class StepRecyclerViewAdapter extends RecyclerView.Adapter<StepRecyclerViewAdapter.ViewHolder> {
 
-    private List<Recipe> mRecipes;
-    private final OnRecipeListFragmentListener mListener;
+    @Getter
+    private final List<Step> steps;
 
-    public RecipeRecyclerViewAdapter(List<Recipe> items, OnRecipeListFragmentListener listener) {
-        mRecipes = items;
+    private final OnStepListListener mListener;
+
+    public StepRecyclerViewAdapter(List<Step> items, OnStepListListener listener) {
+        steps = items;
         mListener = listener;
-    }
-
-    public void setRecipes(List<Recipe> data) {
-        this.mRecipes = data;
-        this.notifyDataSetChanged();
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_recipe_list_item, parent, false);
+                .inflate(R.layout.fragment_step_list_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        Recipe recipe = mRecipes.get(position);
-        holder.mItem = recipe;
-        holder.mContentView.setText(recipe.getName());
+        holder.mItem = steps.get(position);
+        holder.mIdView.setText(String.valueOf(steps.get(position).getId()));
+        holder.mContentView.setText(steps.get(position).getShortDescription());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,7 +53,8 @@ public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecycl
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    Log.d(StepRecyclerViewAdapter.class.getSimpleName(), "Adapter Step item clicked " + holder.mItem.getDescription());
+                    mListener.onStepListClick(holder.mItem);
                 }
             }
         });
@@ -60,13 +62,19 @@ public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecycl
 
     @Override
     public int getItemCount() {
-        return mRecipes.size();
+        return steps.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        @BindView(R.id.content) TextView mContentView;
-        public Recipe mItem;
+
+        @BindView(R.id.item_number)
+        public TextView mIdView;
+
+        @BindView(R.id.content)
+        public TextView mContentView;
+
+        public Step mItem;
 
         public ViewHolder(View view) {
             super(view);

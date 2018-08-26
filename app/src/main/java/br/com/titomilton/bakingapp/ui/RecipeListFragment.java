@@ -2,6 +2,7 @@ package br.com.titomilton.bakingapp.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,14 +32,14 @@ import retrofit2.Response;
 /**
  * A fragment representing a list of Items.
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the {@link OnRecipeListFragmentListener}
  * interface.
  */
 public class RecipeListFragment extends Fragment implements Callback<List<Recipe>> {
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
 
-    public static String LOG = RecipeListFragment.class.getName();
+    private static String LOG = RecipeListFragment.class.getName();
 
     // TODO: Customize parameters
     private int mColumnCount = 1;
@@ -46,7 +47,7 @@ public class RecipeListFragment extends Fragment implements Callback<List<Recipe
     private List<Recipe> recipes = new ArrayList<>();
     private RecipeRecyclerViewAdapter mAdapter;
 
-    private OnListFragmentInteractionListener mListener;
+    private OnRecipeListFragmentListener mListener;
 
     @BindView(R.id.recipe_list)
     RecyclerView recyclerView;
@@ -56,41 +57,31 @@ public class RecipeListFragment extends Fragment implements Callback<List<Recipe
 
     Unbinder unbinder;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
     public RecipeListFragment() {
-    }
-
-    public static RecipeListFragment newInstance(int columnCount) {
-        RecipeListFragment fragment = new RecipeListFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
     public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
         try {
             Context context = this.getContext();
+            setProgressOn(false);
             if (response.isSuccessful()) {
+
+                Log.d(LOG, "Recipes loaded");
+
                 this.recipes = response.body();
-                setProgressOn(false);
                 mAdapter.setRecipes(this.recipes);
+
 
                 Toast.makeText(context, "Recipes loaded", Toast.LENGTH_SHORT).show();
             } else {
-
-
                 String errorMessage = response.errorBody().string();
                 Log.e(LOG, errorMessage);
                 Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();
 
             }
+
         } catch (IOException e) {
-            setProgressOn(false);
             Log.e(LOG, e.getMessage(), e);
             Toast.makeText(this.getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
         }
@@ -98,6 +89,7 @@ public class RecipeListFragment extends Fragment implements Callback<List<Recipe
 
     @Override
     public void onFailure(Call<List<Recipe>> call, Throwable t) {
+        setProgressOn(false);
         Log.e(LOG, t.getMessage(), t);
         Toast.makeText(this.getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
     }
@@ -127,12 +119,14 @@ public class RecipeListFragment extends Fragment implements Callback<List<Recipe
 
         setProgressOn(true);
 
+        Log.d(LOG, "Getting recipes");
+
         if (NetworkUtils.isConnected(context)) {
             RestAPI.getRecipes(this);
         } else {
             setProgressOn(false);
 
-            Toast.makeText(context, R.string.recipes_cannot_be_loaded_network_offline, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.recipes_cannot_be_loaded, Toast.LENGTH_SHORT).show();
         }
 
         return view;
@@ -152,12 +146,18 @@ public class RecipeListFragment extends Fragment implements Callback<List<Recipe
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
+        if (context instanceof OnRecipeListFragmentListener) {
+            mListener = (OnRecipeListFragmentListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnStepListListener");
         }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getActivity().setTitle(getString(R.string.app_title));
     }
 
     @Override
@@ -172,17 +172,7 @@ public class RecipeListFragment extends Fragment implements Callback<List<Recipe
         unbinder.unbind();
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnListFragmentInteractionListener {
+    public interface OnRecipeListFragmentListener {
         void onListFragmentInteraction(Recipe recipe);
     }
 }

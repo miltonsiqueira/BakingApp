@@ -2,7 +2,6 @@ package br.com.titomilton.bakingapp.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,8 +22,7 @@ public class RecipeDetailFragment extends Fragment {
     @BindView(R.id.tv_ingredients)
     TextView tvIngredients;
     private Unbinder unbinder;
-//    private OnFragmentInteractionListener mListener;
-    private RecipeViewModel recipeViewModel;
+    private MainViewModel mainViewModel;
 
 
     public RecipeDetailFragment() {
@@ -45,12 +43,6 @@ public class RecipeDetailFragment extends Fragment {
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -60,16 +52,17 @@ public class RecipeDetailFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        recipeViewModel = ViewModelProviders.of(getActivity()).get(RecipeViewModel.class);
+        mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
 
-        if (recipeViewModel.getRecipe() != null) {
+        if (mainViewModel.getRecipe() != null) {
+            getActivity().setTitle(mainViewModel.getRecipe().getName());
             setIngredients();
         }
     }
 
     private void setIngredients() {
         StringBuilder sb = new StringBuilder();
-        for (Ingredient ingredient : recipeViewModel.getRecipe().getIngredients()) {
+        for (Ingredient ingredient : mainViewModel.getRecipe().getIngredients()) {
             sb.append("- ")
                     .append(ingredient.getIngredient())
                     .append(" (")

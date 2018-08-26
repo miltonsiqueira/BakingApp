@@ -3,5 +3,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="recipes_cannot_be_loaded_network_offline">Recipes cannot be loaded. Network is offline.</string>
+    <string name="recipes_cannot_be_loaded">Recipes cannot be loaded.</string>
+    <string name="app_title">Baking Time</string>
+    <string name="network_is_offline">Network is offline.</string>
+    <string name="url_is_invalid">Url is invalid</string>
 </resources>
