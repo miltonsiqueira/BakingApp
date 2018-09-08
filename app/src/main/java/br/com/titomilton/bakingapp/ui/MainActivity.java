@@ -21,12 +21,11 @@ public class MainActivity extends AppCompatActivity implements RecipeListFragmen
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
         if (savedInstanceState == null) {
-
             Fragment fragment = new RecipeListFragment();
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, fragment)
+                    .addToBackStack(fragment.getClass().getSimpleName())
                     .commit();
-
         }
     }
 
@@ -40,9 +39,7 @@ public class MainActivity extends AppCompatActivity implements RecipeListFragmen
     @Override
     public void onListFragmentInteraction(Recipe recipe) {
         mainViewModel.setRecipe(recipe);
-
         replaceFragment(new RecipeDetailFragment());
-
     }
 
     @Override

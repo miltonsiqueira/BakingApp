@@ -99,6 +99,7 @@ public class StepFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        getActivity().setTitle(getString(R.string.app_title));
         setStep(mainViewModel.getStep());
     }
 
