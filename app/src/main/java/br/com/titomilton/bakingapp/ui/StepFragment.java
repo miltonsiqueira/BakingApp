@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -27,7 +28,10 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import java.util.List;
+
 import br.com.titomilton.bakingapp.R;
+import br.com.titomilton.bakingapp.entity.Step;
 import br.com.titomilton.bakingapp.utils.NetworkUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,16 +42,24 @@ public class StepFragment extends Fragment {
     private static final String LOG = StepFragment.class.getSimpleName();
     private static final DefaultBandwidthMeter BANDWIDTH_METER =
             new DefaultBandwidthMeter();
+
     @BindView(R.id.player_view)
     PlayerView playerView;
 
     @BindView(R.id.step_description)
     TextView tvStepDescription;
+
+    @BindView(R.id.previous_button)
+    Button btnPrevious;
+
+    @BindView(R.id.next_button)
+    Button btnNext;
+
     Unbinder unbinder;
 
     private SimpleExoPlayer player;
     private MainViewModel mainViewModel;
-    private String videoUrl;
+    private Step step;
     private boolean playWhenReady;
     private int currentWindow = 0;
     private long playbackPosition = 0;
@@ -67,6 +79,19 @@ public class StepFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_step, container, false);
         unbinder = ButterKnife.bind(this, view);
 
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToStep(1);
+            }
+        });
+
+        btnPrevious.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToStep(-1);
+            }
+        });
         return view;
     }
 
@@ -74,9 +99,18 @@ public class StepFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
-        videoUrl = mainViewModel.getStep().getVideoURL();
-        tvStepDescription.setText(mainViewModel.getStep().getDescription());
+        setStep(mainViewModel.getStep());
+    }
+
+    private void setStepAndVideo(Step step) {
+        setStep(step);
         initializePlayer();
+    }
+
+    private void setStep(Step step) {
+        this.step = step;
+        mainViewModel.setStep(this.step);
+        tvStepDescription.setText(this.step.getDescription());
     }
 
     @Override
@@ -85,12 +119,11 @@ public class StepFragment extends Fragment {
     }
 
     private void initializePlayer() {
-        Log.d(LOG, "open url " + videoUrl);
+        Log.d(LOG, "open url " + step.getVideoURL());
 
         Context context = getContext();
-
-        if (player == null &&
-                NetworkUtils.isConnected(context) && NetworkUtils.isValidUrl(context, videoUrl)) {
+        boolean canShowVideo = NetworkUtils.isConnected(context) && NetworkUtils.isValidUrl(context, step.getVideoURL());
+        if (player == null && canShowVideo) {
 
             TrackSelection.Factory adaptiveTrackSelectionFactory =
                     new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
@@ -104,11 +137,14 @@ public class StepFragment extends Fragment {
             player.setPlayWhenReady(playWhenReady);
             player.seekTo(currentWindow, playbackPosition);
 
-            Uri uri = Uri.parse(videoUrl);
+            Uri uri = Uri.parse(step.getVideoURL());
             MediaSource mediaSource = buildMediaSource(context, uri);
             player.prepare(mediaSource, true, false);
 
         }
+
+        playerView.setVisibility(canShowVideo ? View.VISIBLE : View.GONE);
+
     }
 
     private MediaSource buildMediaSource(Context context, Uri uri) {
@@ -180,4 +216,14 @@ public class StepFragment extends Fragment {
             releasePlayer();
         }
     }
+
+    private void goToStep(int increment) {
+        List<Step> steps = mainViewModel.getRecipe().getSteps();
+        int i = steps.indexOf(mainViewModel.getStep());
+        i = i + increment;
+        if (i >= 0 && i < steps.size()) {
+            setStepAndVideo(steps.get(i));
+        }
+    }
+
 }
