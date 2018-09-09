@@ -60,7 +60,6 @@ public class StepFragment extends Fragment {
     private SimpleExoPlayer player;
     private MainViewModel mainViewModel;
     private Step step;
-    private boolean playWhenReady;
     private int currentWindow = 0;
     private long playbackPosition = 0;
 
@@ -99,7 +98,7 @@ public class StepFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
-        getActivity().setTitle(getString(R.string.app_title));
+        getActivity().setTitle("");
         setStep(mainViewModel.getStep());
     }
 
@@ -135,7 +134,7 @@ public class StepFragment extends Fragment {
                     new DefaultLoadControl());
 
             playerView.setPlayer(player);
-            player.setPlayWhenReady(playWhenReady);
+            player.setPlayWhenReady(true);
             player.seekTo(currentWindow, playbackPosition);
 
             Uri uri = Uri.parse(step.getVideoURL());
@@ -158,7 +157,6 @@ public class StepFragment extends Fragment {
         if (player != null) {
             playbackPosition = player.getCurrentPosition();
             currentWindow = player.getCurrentWindowIndex();
-            playWhenReady = player.getPlayWhenReady();
             player.release();
             player = null;
         }
