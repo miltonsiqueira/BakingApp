@@ -8,7 +8,7 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     android:orientation="vertical"
-    tools:context=".ui.RecipeListFragment">
+    tools:context=".ui.recipe.RecipeListFragment">
 
     <ProgressBar
         android:id="@+id/pb_loading_indicator"

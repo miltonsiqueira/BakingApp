@@ -1,4 +1,4 @@
-package br.com.titomilton.bakingapp.ui;
+package br.com.titomilton.bakingapp.ui.recipe;
 
 import android.content.Context;
 import android.os.Bundle;

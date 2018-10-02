@@ -1,4 +1,4 @@
-package br.com.titomilton.bakingapp.ui;
+package br.com.titomilton.bakingapp.ui.recipe;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import br.com.titomilton.bakingapp.R;
 import br.com.titomilton.bakingapp.entity.Ingredient;
+import br.com.titomilton.bakingapp.ui.MainViewModel;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;

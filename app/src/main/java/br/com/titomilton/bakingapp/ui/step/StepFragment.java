@@ -1,4 +1,4 @@
-package br.com.titomilton.bakingapp.ui;
+package br.com.titomilton.bakingapp.ui.step;
 
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
@@ -32,6 +32,7 @@ import java.util.List;
 
 import br.com.titomilton.bakingapp.R;
 import br.com.titomilton.bakingapp.entity.Step;
+import br.com.titomilton.bakingapp.ui.MainViewModel;
 import br.com.titomilton.bakingapp.utils.NetworkUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;

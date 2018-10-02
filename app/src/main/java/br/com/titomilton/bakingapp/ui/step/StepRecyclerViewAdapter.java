@@ -1,4 +1,4 @@
-package br.com.titomilton.bakingapp.ui;
+package br.com.titomilton.bakingapp.ui.step;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,7 +11,7 @@ import java.util.List;
 
 import br.com.titomilton.bakingapp.R;
 import br.com.titomilton.bakingapp.entity.Step;
-import br.com.titomilton.bakingapp.ui.StepListFragment.OnStepListListener;
+import br.com.titomilton.bakingapp.ui.step.StepListFragment.OnStepListListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import lombok.Getter;

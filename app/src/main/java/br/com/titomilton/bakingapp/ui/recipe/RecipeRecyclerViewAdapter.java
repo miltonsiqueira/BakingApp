@@ -1,4 +1,4 @@
-package br.com.titomilton.bakingapp.ui;
+package br.com.titomilton.bakingapp.ui.recipe;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,7 +10,7 @@ import java.util.List;
 
 import br.com.titomilton.bakingapp.R;
 import br.com.titomilton.bakingapp.entity.Recipe;
-import br.com.titomilton.bakingapp.ui.RecipeListFragment.OnRecipeListFragmentListener;
+import br.com.titomilton.bakingapp.ui.recipe.RecipeListFragment.OnRecipeListFragmentListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

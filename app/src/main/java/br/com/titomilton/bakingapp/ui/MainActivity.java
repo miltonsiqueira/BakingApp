@@ -8,6 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import br.com.titomilton.bakingapp.R;
 import br.com.titomilton.bakingapp.entity.Recipe;
 import br.com.titomilton.bakingapp.entity.Step;
+import br.com.titomilton.bakingapp.ui.recipe.RecipeDetailFragment;
+import br.com.titomilton.bakingapp.ui.recipe.RecipeListFragment;
+import br.com.titomilton.bakingapp.ui.step.StepFragment;
+import br.com.titomilton.bakingapp.ui.step.StepListFragment;
 
 public class MainActivity extends AppCompatActivity implements RecipeListFragment.OnRecipeListFragmentListener, StepListFragment.OnStepListListener {
 

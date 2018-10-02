@@ -10,5 +10,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-    tools:context=".ui.StepListFragment"
+    tools:context=".ui.step.StepListFragment"
     tools:listitem="@layout/fragment_step_list_item"/>

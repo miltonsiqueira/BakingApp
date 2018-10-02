@@ -1,4 +1,4 @@
-package br.com.titomilton.bakingapp.ui;
+package br.com.titomilton.bakingapp.ui.step;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -18,6 +18,7 @@ import java.util.List;
 
 import br.com.titomilton.bakingapp.R;
 import br.com.titomilton.bakingapp.entity.Step;
+import br.com.titomilton.bakingapp.ui.MainViewModel;
 
 public class StepListFragment extends Fragment {
     private static final String LOG = StepListFragment.class.getSimpleName();
