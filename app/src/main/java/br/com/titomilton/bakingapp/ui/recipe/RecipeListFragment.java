@@ -36,8 +36,6 @@ import retrofit2.Response;
  * interface.
  */
 public class RecipeListFragment extends Fragment implements Callback<List<Recipe>> {
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
 
     private static String LOG = RecipeListFragment.class.getName();
 
@@ -97,10 +95,6 @@ public class RecipeListFragment extends Fragment implements Callback<List<Recipe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
     }
 
     @Override
@@ -108,6 +102,7 @@ public class RecipeListFragment extends Fragment implements Callback<List<Recipe
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recipe_list, container, false);
         unbinder = ButterKnife.bind(this, view);
+        mColumnCount = getResources().getInteger(R.integer.recipes_columns);
         final Context context = view.getContext();
         if (mColumnCount <= 1) {
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
