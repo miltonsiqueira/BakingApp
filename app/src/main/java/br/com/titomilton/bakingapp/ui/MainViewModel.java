@@ -12,4 +12,13 @@ import lombok.Setter;
 public class MainViewModel extends ViewModel {
     private Recipe recipe;
     private Step step;
+
+    public Step getStep() {
+        if (this.step == null) {
+            if (recipe != null && recipe.getSteps() != null && !recipe.getSteps().isEmpty()) {
+                this.step = recipe.getSteps().get(0);
+            }
+        }
+        return this.step;
+    }
 }

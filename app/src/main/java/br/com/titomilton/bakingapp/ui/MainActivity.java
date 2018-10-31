@@ -33,24 +33,47 @@ public class MainActivity extends AppCompatActivity implements RecipeListFragmen
         }
     }
 
-    private void replaceFragment(Fragment fragment) {
+    private void replaceMainContainerFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .addToBackStack(fragment.getClass().getSimpleName())
                 .commit();
     }
 
+    private void replaceStepContainerFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.step_container, fragment)
+                .commit();
+    }
+
+    public void addFragmentOnStepContainer() {
+        if (hasStepContainer()) {
+            Fragment fragment = new StepFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.step_container, fragment)
+                    .commit();
+        }
+    }
+
+
     @Override
     public void onListFragmentInteraction(Recipe recipe) {
         mainViewModel.setRecipe(recipe);
-        replaceFragment(new RecipeDetailFragment());
+        replaceMainContainerFragment(new RecipeDetailFragment());
     }
 
     @Override
     public void onStepListClick(Step item) {
         mainViewModel.setStep(item);
-        replaceFragment(new StepFragment());
+        if (hasStepContainer()) {
+            replaceStepContainerFragment(new StepFragment());
+        } else {
+            replaceMainContainerFragment(new StepFragment());
+        }
     }
 
+    private boolean hasStepContainer() {
+        return findViewById(R.id.step_container) != null;
+    }
 
 }

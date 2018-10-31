@@ -43,6 +43,7 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
     implementation "android.arch.lifecycle:viewmodel:$lifecycle_version"
 
+    implementation 'com.android.support:support-v4:27.1.1'
     annotationProcessor "android.arch.lifecycle:compiler:$lifecycle_version"
 
     // Lombok
