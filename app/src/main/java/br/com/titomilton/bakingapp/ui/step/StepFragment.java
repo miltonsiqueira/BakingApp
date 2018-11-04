@@ -1,5 +1,6 @@
 package br.com.titomilton.bakingapp.ui.step;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -12,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -144,14 +144,6 @@ public class StepFragment extends Fragment {
             MediaSource mediaSource = buildMediaSource(context, uri);
             player.prepare(mediaSource, true, false);
 
-            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) playerView.getLayoutParams();
-                params.width = params.MATCH_PARENT;
-                params.height = params.MATCH_PARENT;
-                playerView.setLayoutParams(params);
-
-            }
-
         }
 
 
@@ -194,12 +186,40 @@ public class StepFragment extends Fragment {
         }
     }
 
+    @SuppressLint("InlinedApi")
+    private void hideSystemUi() {
+
+
+    }
+
+    private void showSystemUi() {
+
+    }
+
     @Override
     public void onResume() {
         super.onResume();
+
+        setSystemUI();
+
         if ((Util.SDK_INT <= 23 || player == null)) {
             initializePlayer();
         }
+    }
+
+    private void setSystemUI() {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            playerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+
+        } else {
+            playerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+        }
+        initializePlayer();
     }
 
     @Override
