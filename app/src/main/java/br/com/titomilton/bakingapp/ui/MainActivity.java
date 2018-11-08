@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
+import br.com.titomilton.bakingapp.AppWidget;
 import br.com.titomilton.bakingapp.R;
 import br.com.titomilton.bakingapp.entity.Recipe;
 import br.com.titomilton.bakingapp.entity.Step;
@@ -61,11 +62,7 @@ public class MainActivity extends AppCompatActivity implements RecipeListFragmen
         mainViewModel.setRecipe(recipe);
         setTitle(recipe.getName());
 
-        // TODO atualizar widget
-//        Intent intentUpdate = new Intent(this, AppWidget.class);
-//        intentUpdate.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-//        int widgetId=extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-//        sendBroadcast(intentUpdate);
+        AppWidget.setNewIngredients(getApplicationContext(), recipe.getIngredientesToString());
 
         replaceMainContainerFragment(new RecipeDetailFragment());
     }
