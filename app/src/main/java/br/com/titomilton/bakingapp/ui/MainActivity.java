@@ -59,6 +59,14 @@ public class MainActivity extends AppCompatActivity implements RecipeListFragmen
     @Override
     public void onListFragmentInteraction(Recipe recipe) {
         mainViewModel.setRecipe(recipe);
+        setTitle(recipe.getName());
+
+        // TODO atualizar widget
+//        Intent intentUpdate = new Intent(this, AppWidget.class);
+//        intentUpdate.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+//        int widgetId=extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+//        sendBroadcast(intentUpdate);
+
         replaceMainContainerFragment(new RecipeDetailFragment());
     }
 

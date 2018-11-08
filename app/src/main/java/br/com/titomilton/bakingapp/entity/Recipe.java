@@ -15,12 +15,32 @@ import lombok.Setter;
 public class Recipe implements Parcelable {
 
 
+    public static final Parcelable.Creator<Recipe> CREATOR = new Parcelable.Creator<Recipe>() {
+        @Override
+        public Recipe createFromParcel(Parcel source) {
+            return new Recipe(source);
+        }
+
+        @Override
+        public Recipe[] newArray(int size) {
+            return new Recipe[size];
+        }
+    };
     private int id;
     private String name;
     private int serving;
     private String image;
     private List<Ingredient> ingredients;
     private List<Step> steps;
+
+    protected Recipe(Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
+        this.serving = in.readInt();
+        this.image = in.readString();
+        this.ingredients = in.createTypedArrayList(Ingredient.CREATOR);
+        this.steps = in.createTypedArrayList(Step.CREATOR);
+    }
 
     @Override
     public int describeContents() {
@@ -37,24 +57,17 @@ public class Recipe implements Parcelable {
         dest.writeTypedList(this.steps);
     }
 
-    protected Recipe(Parcel in) {
-        this.id = in.readInt();
-        this.name = in.readString();
-        this.serving = in.readInt();
-        this.image = in.readString();
-        this.ingredients = in.createTypedArrayList(Ingredient.CREATOR);
-        this.steps = in.createTypedArrayList(Step.CREATOR);
+    public String getIngredientesToString() {
+        StringBuilder sb = new StringBuilder();
+        for (Ingredient ingredient : getIngredients()) {
+            sb.append("- ")
+                    .append(ingredient.getIngredient())
+                    .append(" (")
+                    .append(ingredient.getQuantity())
+                    .append(" ")
+                    .append(ingredient.getMeasure())
+                    .append(")\n");
+        }
+        return sb.toString();
     }
-
-    public static final Parcelable.Creator<Recipe> CREATOR = new Parcelable.Creator<Recipe>() {
-        @Override
-        public Recipe createFromParcel(Parcel source) {
-            return new Recipe(source);
-        }
-
-        @Override
-        public Recipe[] newArray(int size) {
-            return new Recipe[size];
-        }
-    };
 }

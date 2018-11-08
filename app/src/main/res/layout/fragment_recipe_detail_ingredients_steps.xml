@@ -6,17 +6,13 @@
               android:orientation="vertical"
               tools:context=".ui.recipe.RecipeDetailIngredientsStepsFragment">
 
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp">
 
-        <TextView
-            android:id="@+id/tv_ingredients"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"/>
-    </android.support.v7.widget.CardView>
+    <fragment
+        android:id="@+id/ingredients_container"
+        android:name="br.com.titomilton.bakingapp.ui.recipe.IngredientsFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
