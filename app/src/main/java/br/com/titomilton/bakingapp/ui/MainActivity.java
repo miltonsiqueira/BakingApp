@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
-import br.com.titomilton.bakingapp.AppWidget;
 import br.com.titomilton.bakingapp.R;
 import br.com.titomilton.bakingapp.entity.Recipe;
 import br.com.titomilton.bakingapp.entity.Step;

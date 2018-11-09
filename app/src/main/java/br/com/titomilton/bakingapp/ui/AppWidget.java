@@ -1,4 +1,4 @@
-package br.com.titomilton.bakingapp;
+package br.com.titomilton.bakingapp.ui;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.RemoteViews;
+
+import br.com.titomilton.bakingapp.R;
 
 /**
  * Implementation of App Widget functionality.
@@ -27,12 +29,14 @@ public class AppWidget extends AppWidgetProvider {
 
         AppWidgetManager man = AppWidgetManager.getInstance(context);
         int[] ids = man.getAppWidgetIds(
-                new ComponentName(context,AppWidget.class));
-        Intent updateIntent = new Intent();
-        updateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        updateIntent.putExtra(AppWidget.EXTRA_WIDGET_IDS, ids);
-        updateIntent.putExtra(AppWidget.EXTRA_INGREDIENTS, ingredients);
-        context.sendBroadcast(updateIntent);
+                new ComponentName(context.getApplicationContext(), AppWidget.class));
+        if (ids.length > 0) {
+            Intent updateIntent = new Intent();
+            updateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+            updateIntent.putExtra(AppWidget.EXTRA_WIDGET_IDS, ids);
+            updateIntent.putExtra(AppWidget.EXTRA_INGREDIENTS, ingredients);
+            context.sendBroadcast(updateIntent);
+        }
 
     }
 
